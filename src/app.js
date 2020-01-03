@@ -49,22 +49,21 @@ app.get('/weather', (req, res) => {
         })
     }
 
-    geocode(req.query.address, (error, {latitude, longitude, location}) => {
-        res.send({
-            forecast: forecast,
-            location,
-            address: req.query.address
-        })
+    geocode(req.query.address, (error, { latitude, longitude, location } = {}) => {
         if (error) {
             return res.send({ error })
         }
 
-        forecast(latitude, longitude, (error, forecast) => {
+        forecast(latitude, longitude, (error, forecastData) => {
             if (error) {
                 return res.send({ error })
             }
 
-            
+            res.send({
+                forecast: forecastData,
+                location,
+                address: req.query.address
+            })
         })
     })
 })
@@ -93,11 +92,11 @@ app.get('/help/*', (req, res) => {
 app.get('*', (req, res) => {
     res.render('404', {
         title: '404',
-        name: 'Abigail',
+        name:  'Abigail',
         errorMessage: 'Page not found.'
     })
 })
 
 app.listen(port, () => {
-    console.log('Server is up on port .' + port)
+    console.log('Server is up on port ' + port)
 })
